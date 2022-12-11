@@ -1,5 +1,38 @@
-
 #!/usr/bin/python3
+
+'''
+This file calculates pagerank vectors for small-scale webgraphs.
+See the README.md for example usage.
+'''
+
+import math
+import torch
+import gzip
+import csv
+import gensim.downloader
+import logging
+
+vectors= gensim.downloader.load('glove-twitter-25')
+
+class WebGraph():
+
+    def __init__(self, filename, max_nnz=None, filter_ratio=None):
+        '''
+        Initializes the WebGraph from a file.
+        The file should be a gzipped csv file.
+        Each line contains two entries: the source and target corresponding to a single web link.
+        This code assumes that the file is sorted on the source column.
+        '''
+
+        self.url_dict = {}
+        indices = []
+
+        from collections import defaultdict
+        target_counts = defaultdict(lambda: 0)
+
+        # loop through filename to extract the indices
+        logging.debug('computing indices')
+"pagerank.py" 273L, 9277C                                                        1,18          To#!/usr/bin/python3
 
 '''
 This file calculates pagerank vectors for small-scale webgraphs.
@@ -231,7 +264,7 @@ def url_satisfies_query(url, query):
         tmp = vectors.most_similar(term, topn=5)
         for index in range(len(tmp)):
             terms.append(tmp[index][0])
-
+    
     num_terms=0
     for term in terms:
         if term[0] != '-':
@@ -271,4 +304,3 @@ if __name__=='__main__':
     v = g.make_personalization_vector(args.personalization_vector_query)
     pi = g.power_method(v, alpha=args.alpha, max_iterations=args.max_iterations, epsilon=args.epsilon)
     g.search(pi, query=args.search_query, max_results=args.max_results)
-
