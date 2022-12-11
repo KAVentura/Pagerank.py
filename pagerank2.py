@@ -9,44 +9,10 @@ import math
 import torch
 import gzip
 import csv
-import gensim.downloader
-import logging
+Import logging
+import gensim.downloader as api
 
-vectors= gensim.downloader.load('glove-twitter-25')
-
-class WebGraph():
-
-    def __init__(self, filename, max_nnz=None, filter_ratio=None):
-        '''
-        Initializes the WebGraph from a file.
-        The file should be a gzipped csv file.
-        Each line contains two entries: the source and target corresponding to a single web link.
-        This code assumes that the file is sorted on the source column.
-        '''
-
-        self.url_dict = {}
-        indices = []
-
-        from collections import defaultdict
-        target_counts = defaultdict(lambda: 0)
-
-        # loop through filename to extract the indices
-        logging.debug('computing indices')
-"pagerank.py" 273L, 9277C                                                        1,18          To#!/usr/bin/python3
-
-'''
-This file calculates pagerank vectors for small-scale webgraphs.
-See the README.md for example usage.
-'''
-
-import math
-import torch
-import gzip
-import csv
-import gensim.downloader
-import logging
-
-vectors= gensim.downloader.load('glove-twitter-25')
+vectors= api.load(‘word2vec-google-news-300’)
 
 class WebGraph():
 
@@ -210,15 +176,37 @@ class WebGraph():
             return x.squeeze()
 
 
-    def search(self, pi, query='', max_results=10):
+    def search(self, pi, query='', max_results=10, s_weight=.03, power=30):
         '''
         Logs all urls that match the query.
         Results are displayed in sorted order according to the pagerank vector pi.
         '''
         n = self.P.shape[0]
         k= min(max_results,n)
-        vals,indices = torch.topk(pi,n)
 
+        S = vectors.most_similar(args.search_query)
+
+        for i in range(n):
+            New_n, score, W_weight = 0,0,0
+
+            urll = self._index_to_url(i)
+
+            if is_url_satisfies_query(urll, query):
+                new_n+=1
+                W_weight+=s_weight
+
+            for word in range(10):
+                w= S[word][0]
+
+                if is_url_satisfies_query(urll,w):
+                    New_n+=1
+                    W_weight+=S[word][1]**power
+
+            score+= New_n*W_weight
+
+            pi[i]+=score
+
+        vals,indices = torch.topk(pi,n)
         matches = 0
         for i in range(n):
             if matches >= max_results:
@@ -229,6 +217,8 @@ class WebGraph():
             if url_satisfies_query(url,query):
                 logging.info(f'rank={matches} pagerank={pagerank:0.4e} url={url}')
                 matches += 1
+
+
 
 
 def url_satisfies_query(url, query):
@@ -258,13 +248,11 @@ def url_satisfies_query(url, query):
     '''
     satisfies = False
     terms = query.split()
-    res = query.split()
+    synonym = vectors.most_similar(args.search_query)
 
-    for term in res:
-        tmp = vectors.most_similar(term, topn=5)
-        for index in range(len(tmp)):
-            terms.append(tmp[index][0])
-    
+    for i in range(8):
+        terms.append(synonym[i][0])
+
     num_terms=0
     for term in terms:
         if term[0] != '-':
@@ -304,3 +292,4 @@ if __name__=='__main__':
     v = g.make_personalization_vector(args.personalization_vector_query)
     pi = g.power_method(v, alpha=args.alpha, max_iterations=args.max_iterations, epsilon=args.epsilon)
     g.search(pi, query=args.search_query, max_results=args.max_results)
+
