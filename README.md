@@ -34,3 +34,17 @@ INFO:root:rank=7 pagerank=0.0012017081025987864 url=www.lawfareblog.com/critique
 INFO:root:rank=8 pagerank=0.0011908655287697911 url=www.lawfareblog.com/baghdadis-death-and-presidential-speech
 INFO:root:rank=9 pagerank=0.001181220868602395 url=www.lawfareblog.com/text-presidents-speech-afternoon
 ```
+
+```
+Katherine.Ventura.24@lambda-server:~/Pagerank.py$ python3 pagerank.py --data=data/lawfareblog.csv.gz --filter_ratio=0.2 --personalization_vector_query='corona'
+INFO:root:rank=0 pagerank=0.01936263032257557 url=www.lawfareblog.com/britains-coronavirus-response
+INFO:root:rank=1 pagerank=0.01936263032257557 url=www.lawfareblog.com/prosecuting-purposeful-coronavirus-exposure-terrorism
+INFO:root:rank=2 pagerank=0.017857149243354797 url=www.lawfareblog.com/rational-security-my-corona-edition
+INFO:root:rank=3 pagerank=0.017857149243354797 url=www.lawfareblog.com/brexit-not-immune-coronavirus
+INFO:root:rank=4 pagerank=0.01775084249675274 url=www.lawfareblog.com/chinatalk-how-party-takes-its-propaganda-global
+INFO:root:rank=5 pagerank=0.017413180321455002 url=www.lawfareblog.com/lawfare-podcast-united-nations-and-coronavirus-crisis
+INFO:root:rank=6 pagerank=0.01578725501894951 url=www.lawfareblog.com/paper-hearing-experts-debate-digital-contact-tracing-and-coronavirus-privacy-concerns
+INFO:root:rank=7 pagerank=0.015336664393544197 url=www.lawfareblog.com/israeli-emergency-regulations-location-tracking-coronavirus-carriers
+INFO:root:rank=8 pagerank=0.014914634637534618 url=www.lawfareblog.com/china-responds-coronavirus-iron-grip-information-flow
+INFO:root:rank=9 pagerank=0.014065689407289028 url=www.lawfareblog.com/congressional-homeland-security-committees-seek-ways-support-state-federal-responses-coronavirus
+```
